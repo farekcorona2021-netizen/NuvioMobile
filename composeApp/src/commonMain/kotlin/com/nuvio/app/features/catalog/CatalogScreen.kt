@@ -1,6 +1,7 @@
 package com.nuvio.app.features.catalog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -33,6 +34,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +65,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import nuvio.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
+
+// Vault theme — dark glassmorphic palette (UI styling only)
+private val VaultBackground = Color(0xFF0B0E14)
+private val VaultGlassFill = Color.White.copy(alpha = 0.06f)
+private val VaultGlassBorder = Color.White.copy(alpha = 0.12f)
 
 @Composable
 fun CatalogScreen(
@@ -155,7 +162,7 @@ fun CatalogScreen(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(VaultBackground),
     ) {
         val columns = remember(maxWidth) { catalogGridColumnsForWidth(maxWidth) }
 
@@ -238,7 +245,14 @@ private fun CatalogHeader(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+            .background(VaultBackground)
+            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+            .background(VaultGlassFill)
+            .border(
+                width = 1.dp,
+                color = VaultGlassBorder,
+                shape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp),
+            )
             .padding(horizontal = 16.dp)
             .padding(top = 52.dp, bottom = 12.dp),
     ) {
@@ -246,7 +260,7 @@ private fun CatalogHeader(
             onClick = onBack,
             modifier = Modifier
                 .size(40.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = VaultGlassFill,
             contentColor = MaterialTheme.colorScheme.onSurface,
             iconSize = 24.dp,
         )
@@ -284,12 +298,14 @@ private fun CatalogPosterTile(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val posterShape = RoundedCornerShape((cornerRadiusDp + 6).dp)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(item.posterShape.catalogAspectRatio())
-                .clip(RoundedCornerShape(cornerRadiusDp.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .clip(posterShape)
+                .background(VaultGlassFill)
+                .border(width = 1.dp, color = VaultGlassBorder, shape = posterShape)
                 .posterCardClickable(onClick = onClick, onLongClick = onLongClick),
         ) {
             if (item.poster != null) {
@@ -402,3 +418,4 @@ private fun catalogGridColumnsForWidth(screenWidth: Dp): Int =
         screenWidth >= 840.dp -> 4
         else -> 3
     }
+    
